@@ -1,0 +1,16 @@
+#! bin/bash
+
+source database.conf
+funcszkolaadd(){ 
+        mapfile -t schoolsarray < schoolslist
+	for i in ${schoolsarray[@]}; do
+		psql -d ${databasename} -c "INSERT INTO licensees (short_name) VALUES
+                ('${i}');
+		INSERT INTO licenses (licensee_id, entitlement) VALUES
+	((SELECT licensee_id FROM licensees WHERE short_name = '${i}'), 'student'),
+	((SELECT licensee_id FROM licensees WHERE short_name = '${i}'), 'teacher')"
+done
+}
+funcszkolaadd
+
+
